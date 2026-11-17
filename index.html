@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Светлячки: головоломка — логическая игра для Android</title>
+<meta name="description" content="Светлячки — спокойная логическая игра для Android: зажгите всех светлячков. 150 уровней от 3×3 до 7×7, подсказки, игра без интернета. Скачайте в RuStore.">
+<meta property="og:title" content="Светлячки: головоломка">
+<meta property="og:description" content="Логическая игра: зажги всех светлячков! 150 уровней, подсказки и спокойная атмосфера.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://elarionarts.github.io/svetlyachki/icon-512.png">
+<meta name="theme-color" content="#0b1026">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 108 108'%3E%3Crect width='108' height='108' rx='24' fill='%230b1026'/%3E%3Cg fill='%232a3566'%3E%3Crect x='24.5' y='24.5' width='17' height='17' rx='4'/%3E%3Crect x='66.5' y='24.5' width='17' height='17' rx='4'/%3E%3Crect x='24.5' y='66.5' width='17' height='17' rx='4'/%3E%3Crect x='66.5' y='66.5' width='17' height='17' rx='4'/%3E%3C/g%3E%3Cg fill='%23ffd54f'%3E%3Crect x='45.5' y='24.5' width='17' height='17' rx='4'/%3E%3Crect x='24.5' y='45.5' width='17' height='17' rx='4'/%3E%3Crect x='45.5' y='45.5' width='17' height='17' rx='4'/%3E%3Crect x='66.5' y='45.5' width='17' height='17' rx='4'/%3E%3Crect x='45.5' y='66.5' width='17' height='17' rx='4'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+  :root {
+    --night: #0b1026;
+    --night-top: #1a2150;
+    --card: #151c3b;
+    --card-high: #212a55;
+    --line: #2a3566;
+    --cell-off: #26305e;
+    --cell-on: #ffc93c;
+    --glow: #fff3b0;
+    --text: #e8ebfa;
+    --dim: #a9b1da;
+    --accent: #ffd54f;
+    --teal: #4dd0e1;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    color: var(--text);
+    background: radial-gradient(1200px 600px at 70% -10%, #26306b 0%, transparent 60%),
+                linear-gradient(180deg, var(--night-top), var(--night) 520px) , var(--night);
+    background-color: var(--night);
+    font: 17px/1.6 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  a { color: var(--teal); }
+  a:hover { color: var(--accent); }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+
+  /* звёздочки-огоньки на фоне */
+  .sky { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .sky i {
+    position: absolute; width: 3px; height: 3px; border-radius: 50%;
+    background: #ffe98a; opacity: .5; box-shadow: 0 0 6px 2px rgba(255, 213, 79, .35);
+    animation: blink 4s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100% { opacity: .15; } 50% { opacity: .8; } }
+  @media (prefers-reduced-motion: reduce) { .sky i { animation: none; } html { scroll-behavior: auto; } }
+  main, header, footer { position: relative; z-index: 1; }
+
+  /* шапка */
+  header .wrap { display: flex; align-items: center; justify-content: space-between; padding-top: 20px; }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--dim); text-decoration: none; font-size: 15px; }
+  .brand svg { width: 32px; height: 32px; border-radius: 8px; }
+  .brand b { color: var(--text); font-weight: 600; }
+  header nav a { color: var(--dim); text-decoration: none; font-size: 15px; margin-left: 18px; }
+  header nav a:hover { color: var(--accent); }
+
+  /* первый экран */
+  .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; padding: 56px 0 40px; }
+  .hero-icon { width: 96px; height: 96px; border-radius: 22px; box-shadow: 0 10px 40px rgba(255, 213, 79, .18); }
+  h1 { font-size: 52px; line-height: 1.05; margin: 22px 0 10px; color: var(--accent); letter-spacing: .5px; }
+  .tagline { font-size: 22px; color: #fff; margin: 0 0 10px; }
+  .lead { color: var(--dim); margin: 0 0 28px; max-width: 520px; }
+  .buttons { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 22px; border-radius: 16px; text-decoration: none;
+    font-weight: 700; font-size: 17px; transition: transform .15s, box-shadow .15s;
+  }
+  .btn-main { background: var(--accent); color: #2b1d00; box-shadow: 0 6px 24px rgba(255, 213, 79, .25); }
+  .btn-main:hover { color: #2b1d00; transform: translateY(-1px); box-shadow: 0 10px 30px rgba(255, 213, 79, .35); }
+  .btn-ghost { border: 1px solid var(--line); color: var(--dim); font-weight: 600; cursor: default; }
+  .btn svg { width: 20px; height: 20px; flex: none; }
+  .meta { margin-top: 16px; color: var(--dim); font-size: 14px; }
+
+  /* мини-игра */
+  .demo {
+    background: var(--card); border: 1px solid var(--line); border-radius: 28px;
+    padding: 26px; text-align: center; max-width: 380px; justify-self: center; width: 100%;
+  }
+  .demo h2 { margin: 0 0 4px; font-size: 20px; color: #fff; }
+  .demo p { margin: 0 0 18px; color: var(--dim); font-size: 15px; }
+  .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; aspect-ratio: 1; max-width: 270px; margin: 0 auto; }
+  .board button {
+    border: 0; border-radius: 22%; background: var(--cell-off); cursor: pointer;
+    transition: background .25s, transform .2s, box-shadow .25s; transform: scale(.94);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .board button.on {
+    background: radial-gradient(circle at 50% 50%, var(--glow) 0%, var(--cell-on) 70%);
+    transform: scale(1); box-shadow: 0 0 22px rgba(255, 213, 79, .45);
+  }
+  .board button:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; }
+  .board button.flash { box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .85); }
+  .status { min-height: 26px; margin-top: 16px; font-weight: 600; color: #fff; }
+  .status.win { color: var(--accent); }
+  .reset {
+    margin-top: 8px; background: none; border: 1px solid var(--line); color: var(--dim);
+    border-radius: 999px; padding: 6px 16px; font: inherit; font-size: 14px; cursor: pointer;
+  }
+  .reset:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* секции */
+  section { padding: 44px 0; }
+  h2.title { font-size: 32px; margin: 0 0 8px; color: #fff; }
+  .sub { color: var(--dim); margin: 0 0 28px; }
+
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .feature { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px; }
+  .feature .ic {
+    width: 44px; height: 44px; border-radius: 12px; background: var(--card-high);
+    display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
+  }
+  .feature .ic svg { width: 24px; height: 24px; }
+  .feature h3 { margin: 0 0 6px; font-size: 18px; color: #fff; }
+  .feature p { margin: 0; color: var(--dim); font-size: 15px; }
+
+  /* скриншоты */
+  /* Сетка: 3 в ряд на компьютере, 2 на планшете и телефоне, 1 на очень узких экранах */
+  .shots {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 270px));
+    gap: 24px; justify-content: center;
+  }
+  .shots figure { margin: 0; }
+  .shots button {
+    display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in;
+    border-radius: 22px; -webkit-tap-highlight-color: transparent;
+  }
+  .shots button:focus-visible { outline: 3px solid var(--teal); outline-offset: 4px; }
+  .shots img {
+    display: block; width: 100%; height: auto; border-radius: 22px;
+    border: 5px solid #050814; box-shadow: 0 14px 40px rgba(0, 0, 0, .45); background: var(--card);
+    transition: transform .2s;
+  }
+  .shots button:hover img { transform: translateY(-3px); }
+
+  /* Просмотр скриншота во весь экран */
+  .viewer {
+    position: fixed; inset: 0; z-index: 10; background: rgba(5, 8, 20, .92);
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  .viewer[hidden] { display: none; }
+  .viewer img { max-width: 100%; max-height: 100%; border-radius: 18px; box-shadow: 0 20px 60px rgba(0, 0, 0, .6); }
+  .viewer button {
+    position: absolute; width: 48px; height: 48px; border-radius: 50%; border: 0;
+    background: rgba(255, 255, 255, .12); color: #fff; font-size: 26px; cursor: pointer;
+  }
+  .viewer button:hover { background: rgba(255, 255, 255, .22); }
+  .viewer .close { top: 16px; right: 16px; }
+  .viewer .prev { left: 16px; top: 50%; transform: translateY(-50%); }
+  .viewer .next { right: 16px; top: 50%; transform: translateY(-50%); }
+  .shots-empty { color: var(--dim); font-size: 15px; }
+
+  /* как играть */
+  .rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; counter-reset: step; }
+  .rule { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px; }
+  .rule::before {
+    counter-increment: step; content: counter(step);
+    display: inline-flex; width: 32px; height: 32px; border-radius: 50%;
+    align-items: center; justify-content: center; font-weight: 700;
+    background: var(--accent); color: #2b1d00; margin-bottom: 12px;
+  }
+  .rule p { margin: 0; color: var(--text); font-size: 16px; }
+
+  /* призыв */
+  .cta {
+    text-align: center; background: var(--card); border: 1px solid var(--line);
+    border-radius: 28px; padding: 40px 24px;
+  }
+  .cta .buttons { justify-content: center; }
+
+  footer { padding: 40px 0 48px; color: var(--dim); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 24px; }
+  footer a { color: var(--dim); }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; gap: 36px; padding-top: 36px; text-align: center; }
+    .hero-icon { margin: 0 auto; }
+    .lead { margin-left: auto; margin-right: auto; }
+    .buttons { justify-content: center; }
+    .features, .rules { grid-template-columns: 1fr; }
+    h1 { font-size: 42px; }
+    header nav { display: none; }
+    .shots { grid-template-columns: repeat(2, minmax(0, 260px)); gap: 16px; }
+  }
+  @media (max-width: 340px) {
+    .shots { grid-template-columns: minmax(0, 280px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="sky" aria-hidden="true" id="sky"></div>
+
+<!--
+  ===== НАСТРОЙКИ =====
+  Ссылка на игру в RuStore — меняется в двух местах ниже (поиск по "rustore.ru/catalog").
+  Скриншоты: положите файлы shot-1.png … shot-6.png в эту же папку репозитория.
+  Каких файлов нет — те просто не показываются.
+  Иконка для превью в соцсетях: icon-512.png в эту же папку (необязательно).
+-->
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 108 108" aria-hidden="true">
+        <rect width="108" height="108" fill="#0b1026"/>
+        <g fill="#2a3566">
+          <rect x="24.5" y="24.5" width="17" height="17" rx="4"/><rect x="66.5" y="24.5" width="17" height="17" rx="4"/>
+          <rect x="24.5" y="66.5" width="17" height="17" rx="4"/><rect x="66.5" y="66.5" width="17" height="17" rx="4"/>
+        </g>
+        <g fill="#ffd54f">
+          <rect x="45.5" y="24.5" width="17" height="17" rx="4"/><rect x="24.5" y="45.5" width="17" height="17" rx="4"/>
+          <rect x="45.5" y="45.5" width="17" height="17" rx="4"/><rect x="66.5" y="45.5" width="17" height="17" rx="4"/>
+          <rect x="45.5" y="66.5" width="17" height="17" rx="4"/>
+        </g>
+      </svg>
+      <span><b>Светлячки</b> · ElarionArts</span>
+    </a>
+    <nav>
+      <a href="#features">Об игре</a>
+      <a href="#screens">Скриншоты</a>
+      <a href="#rules">Как играть</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <div class="wrap hero">
+    <div>
+      <svg class="hero-icon" viewBox="0 0 108 108" role="img" aria-label="Иконка игры Светлячки">
+        <defs>
+          <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a2150"/><stop offset="1" stop-color="#0b1026"/></linearGradient>
+          <radialGradient id="g" cx="54" cy="54" r="38" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffd54f" stop-opacity=".45"/><stop offset="1" stop-color="#ffd54f" stop-opacity="0"/></radialGradient>
+          <radialGradient id="c" cx=".5" cy=".5" r=".7"><stop offset="0" stop-color="#fff3b0"/><stop offset="1" stop-color="#ffc93c"/></radialGradient>
+        </defs>
+        <rect width="108" height="108" fill="url(#bg)"/>
+        <circle cx="54" cy="54" r="38" fill="url(#g)"/>
+        <g fill="#2a3566">
+          <rect x="24.5" y="24.5" width="17" height="17" rx="4"/><rect x="66.5" y="24.5" width="17" height="17" rx="4"/>
+          <rect x="24.5" y="66.5" width="17" height="17" rx="4"/><rect x="66.5" y="66.5" width="17" height="17" rx="4"/>
+        </g>
+        <g fill="url(#c)">
+          <rect x="45.5" y="24.5" width="17" height="17" rx="4"/><rect x="24.5" y="45.5" width="17" height="17" rx="4"/>
+          <rect x="45.5" y="45.5" width="17" height="17" rx="4"/><rect x="66.5" y="45.5" width="17" height="17" rx="4"/>
+          <rect x="45.5" y="66.5" width="17" height="17" rx="4"/>
+        </g>
+      </svg>
+      <h1>Светлячки</h1>
+      <p class="tagline">Зажгите всех светлячков</p>
+      <p class="lead">Спокойная логическая игра для Android. Нажатие переключает клетку и её соседей — звучит просто, но каждый ход меняет сразу несколько огоньков.</p>
+      <div class="buttons">
+        <a class="btn btn-main" href="https://www.rustore.ru/catalog/app/ru.elarionarts.svetlyachki" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12,16.5 6.5,11 7.9,9.6 11,12.7V3h2v9.7l3.1,-3.1 1.4,1.4zM5,19h14v2H5z"/></svg>
+          Скачать в RuStore
+        </a>
+        <span class="btn btn-ghost">Скоро в Google Play</span>
+      </div>
+      <p class="meta">Бесплатно · Android 7.0 и новее · без регистрации</p>
+    </div>
+
+    <div class="demo" aria-labelledby="demo-title">
+      <h2 id="demo-title">Попробуйте прямо здесь</h2>
+      <p>Нажмите на клетку, чтобы зажечь всех светлячков</p>
+      <div class="board" id="board" role="group" aria-label="Поле 3 на 3"></div>
+      <div class="status" id="status" aria-live="polite"></div>
+      <button class="reset" id="reset" type="button">Новое поле</button>
+    </div>
+  </div>
+
+  <section id="features">
+    <div class="wrap">
+      <h2 class="title">Об игре</h2>
+      <p class="sub">Логическая игра и головоломка для ума — на пару минут или на весь вечер.</p>
+      <div class="features">
+        <div class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#ffd54f" d="M4,4h7v7H4zM13,4h7v7h-7zM4,13h7v7H4zM13,13h7v7h-7z"/></svg></div>
+          <h3>150 уровней</h3>
+          <p>От разминки 3×3 до сложных полей 7×7. Первые уровни научат правилам.</p>
+        </div>
+        <div class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#ffd54f" d="M12,17.27L18.18,21l-1.64,-7.03L22,9.24l-7.19,-0.61L12,2 9.19,8.63 2,9.24l5.46,4.73L5.82,21z"/></svg></div>
+          <h3>Три звезды</h3>
+          <p>У каждого уровня есть идеальное решение. Найдите его за минимальное число ходов.</p>
+        </div>
+        <div class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#ffd54f" d="M9,21c0,0.55 0.45,1 1,1h4c0.55,0 1,-0.45 1,-1v-1H9v1zM12,2C8.14,2 5,5.14 5,9c0,2.38 1.19,4.47 3,5.74V17c0,0.55 0.45,1 1,1h6c0.55,0 1,-0.45 1,-1v-2.26c1.81,-1.27 3,-3.36 3,-5.74 0,-3.86 -3.14,-7 -7,-7z"/></svg></div>
+          <h3>Подсказки</h3>
+          <p>Застряли? Подсказка покажет верный ход из кратчайшего решения.</p>
+        </div>
+        <div class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4dd0e1" d="M15,1H9v2h6V1zM11,14h2V8h-2v6zM19.03,7.39l1.42,-1.42c-0.43,-0.51 -0.9,-0.99 -1.41,-1.41l-1.42,1.42C16.07,4.74 14.12,4 12,4c-4.97,0 -9,4.03 -9,9s4.02,9 9,9 9,-4.03 9,-9c0,-2.12 -0.74,-4.07 -1.97,-5.61zM12,20c-3.87,0 -7,-3.13 -7,-7s3.13,-7 7,-7 7,3.13 7,7 -3.13,7 -7,7z"/></svg></div>
+          <h3>Короткие уровни</h3>
+          <p>От 30 секунд до пары минут — удобно в дороге и в очереди.</p>
+        </div>
+        <div class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4dd0e1" d="M21,16v-2l-8,-5V3.5c0,-0.83 -0.67,-1.5 -1.5,-1.5S10,2.67 10,3.5V9l-8,5v2l8,-2.5V19l-2,1.5V22l3.5,-1 3.5,1v-1.5L13,19v-5.5l8,2.5z"/></svg></div>
+          <h3>Без интернета</h3>
+          <p>Играйте в метро, в самолёте или на даче — сеть не нужна.</p>
+        </div>
+        <div class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4dd0e1" d="M12,3c-4.97,0 -9,4.03 -9,9s4.03,9 9,9 9,-4.03 9,-9c0,-0.46 -0.04,-0.92 -0.1,-1.36 -0.98,1.37 -2.58,2.26 -4.4,2.26 -2.98,0 -5.4,-2.42 -5.4,-5.4 0,-1.81 0.89,-3.42 2.26,-4.4C12.92,3.04 12.46,3 12,3z"/></svg></div>
+          <h3>Спокойный дизайн</h3>
+          <p>Тёмная ночная тема, мягкое свечение и никакой спешки.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="screens">
+    <div class="wrap">
+      <h2 class="title">Скриншоты</h2>
+      <p class="sub">Как выглядит игра на телефоне.</p>
+      <div class="shots" id="shots">
+        <figure><button type="button" aria-label="Открыть скриншот: Игровое поле 5 на 5"><img src="shot-1.png" alt="Игровое поле 5 на 5" loading="lazy"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Уровень пройден на три звезды"><img src="shot-2.png" alt="Уровень пройден на три звезды" loading="lazy"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Подсказка на поле"><img src="shot-3.png" alt="Подсказка на поле" loading="lazy"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Сложное поле 7 на 7"><img src="shot-4.png" alt="Сложное поле 7 на 7" loading="lazy"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Список уровней со звёздами"><img src="shot-5.png" alt="Список уровней со звёздами" loading="lazy"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Главное меню"><img src="shot-6.png" alt="Главное меню" loading="lazy"></button></figure>
+      </div>
+      <p class="shots-empty" id="shots-empty" hidden>Скриншоты скоро появятся.</p>
+    </div>
+  </section>
+
+  <section id="rules">
+    <div class="wrap">
+      <h2 class="title">Как играть</h2>
+      <p class="sub">Правила понятны за минуту.</p>
+      <div class="rules">
+        <div class="rule"><p>Нажатие переключает клетку и её соседей сверху, снизу, слева и справа.</p></div>
+        <div class="rule"><p>Светящиеся клетки гаснут, тёмные — загораются.</p></div>
+        <div class="rule"><p>Зажгите все клетки, пока не закончились ходы. Меньше ходов — больше звёзд.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="cta">
+        <h2 class="title">Зажгите всех светлячков</h2>
+        <p class="sub">Бесплатная игра для Android.</p>
+        <div class="buttons">
+          <a class="btn btn-main" href="https://www.rustore.ru/catalog/app/ru.elarionarts.svetlyachki" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12,16.5 6.5,11 7.9,9.6 11,12.7V3h2v9.7l3.1,-3.1 1.4,1.4zM5,19h14v2H5z"/></svg>
+            Скачать в RuStore
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Скриншот">
+  <img id="viewer-img" alt="">
+  <button class="prev" id="viewer-prev" type="button" aria-label="Предыдущий">‹</button>
+  <button class="next" id="viewer-next" type="button" aria-label="Следующий">›</button>
+  <button class="close" id="viewer-close" type="button" aria-label="Закрыть">×</button>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 ElarionArts</span>
+    <span>
+      <a href="privacy-policy.html">Политика конфиденциальности</a>
+      &nbsp;·&nbsp;
+      <a href="mailto:elarionarts@gmail.com">elarionarts@gmail.com</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+  // Огоньки на фоне
+  (function () {
+    var sky = document.getElementById('sky');
+    for (var i = 0; i < 40; i++) {
+      var s = document.createElement('i');
+      s.style.left = (Math.random() * 100) + '%';
+      s.style.top = (Math.random() * 100) + '%';
+      s.style.animationDelay = (Math.random() * 4) + 's';
+      var size = Math.random() < 0.3 ? 4 : 2;
+      s.style.width = s.style.height = size + 'px';
+      sky.appendChild(s);
+    }
+  })();
+
+  // Скриншоты: прячем те, которых нет
+  (function () {
+    var box = document.getElementById('shots');
+    var figs = box.querySelectorAll('figure');
+    var left = figs.length;
+    figs.forEach(function (f) {
+      var img = f.querySelector('img');
+      function gone() {
+        f.remove();
+        if (--left === 0) { box.hidden = true; document.getElementById('shots-empty').hidden = false; }
+      }
+      img.addEventListener('error', gone);
+      if (img.complete && img.naturalWidth === 0 && img.currentSrc) gone();
+    });
+  })();
+
+  // Просмотр скриншотов во весь экран
+  (function () {
+    var viewer = document.getElementById('viewer');
+    var big = document.getElementById('viewer-img');
+    var index = 0;
+    function list() { return Array.prototype.slice.call(document.querySelectorAll('#shots img')); }
+    function show(i) {
+      var imgs = list();
+      if (!imgs.length) return;
+      index = (i + imgs.length) % imgs.length;
+      big.src = imgs[index].src;
+      big.alt = imgs[index].alt;
+      viewer.hidden = false;
+      document.body.style.overflow = 'hidden';
+    }
+    function close() { viewer.hidden = true; document.body.style.overflow = ''; }
+    document.getElementById('shots').addEventListener('click', function (e) {
+      var btn = e.target.closest('button');
+      if (btn) show(list().indexOf(btn.querySelector('img')));
+    });
+    document.getElementById('viewer-close').addEventListener('click', close);
+    document.getElementById('viewer-prev').addEventListener('click', function (e) { e.stopPropagation(); show(index - 1); });
+    document.getElementById('viewer-next').addEventListener('click', function (e) { e.stopPropagation(); show(index + 1); });
+    viewer.addEventListener('click', function (e) { if (e.target === viewer || e.target === big) close(); });
+    document.addEventListener('keydown', function (e) {
+      if (viewer.hidden) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') show(index - 1);
+      if (e.key === 'ArrowRight') show(index + 1);
+    });
+    // Свайп влево-вправо на телефоне
+    var x0 = null;
+    viewer.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    viewer.addEventListener('touchend', function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 50) show(index + (dx < 0 ? 1 : -1));
+      x0 = null;
+    });
+  })();
+
+  // Мини-игра 3×3
+  (function () {
+    var boardEl = document.getElementById('board');
+    var statusEl = document.getElementById('status');
+    var N = 3, cells = [], lit = [];
+    // Стартовые поля: каждое решается в 1–2 нажатия
+    var puzzles = [[4], [0], [1], [0, 8], [3, 4], [2, 6], [1, 7]];
+    var last = -1;
+
+    function neighbours(i) {
+      var r = Math.floor(i / N), c = i % N, list = [i];
+      if (r > 0) list.push(i - N);
+      if (r < N - 1) list.push(i + N);
+      if (c > 0) list.push(i - 1);
+      if (c < N - 1) list.push(i + 1);
+      return list;
+    }
+    function toggle(i) { neighbours(i).forEach(function (k) { lit[k] = !lit[k]; }); }
+    function render() {
+      cells.forEach(function (b, k) {
+        b.classList.toggle('on', lit[k]);
+        b.setAttribute('aria-label', 'Клетка ' + (k + 1) + (lit[k] ? ', светится' : ', не светится'));
+      });
+    }
+    function newGame() {
+      var p;
+      do { p = Math.floor(Math.random() * puzzles.length); } while (p === last && puzzles.length > 1);
+      last = p;
+      lit = new Array(N * N).fill(true);
+      puzzles[p].forEach(toggle);
+      statusEl.textContent = '';
+      statusEl.classList.remove('win');
+      render();
+    }
+    for (var i = 0; i < N * N; i++) {
+      (function (k) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.addEventListener('click', function () {
+          if (lit.every(Boolean)) return;
+          toggle(k);
+          neighbours(k).forEach(function (n) {
+            cells[n].classList.add('flash');
+            setTimeout(function () { cells[n].classList.remove('flash'); }, 350);
+          });
+          render();
+          if (lit.every(Boolean)) {
+            statusEl.textContent = 'Все светлячки светятся! В игре таких уровней 150.';
+            statusEl.classList.add('win');
+          }
+        });
+        cells.push(b);
+        boardEl.appendChild(b);
+      })(i);
+    }
+    document.getElementById('reset').addEventListener('click', newGame);
+    newGame();
+  })();
+</script>
+</body>
+</html>
