@@ -134,6 +134,7 @@
     gap: 24px; justify-content: center;
   }
   .shots figure { margin: 0; }
+  .shots figure[hidden] { display: none; }
   .shots button {
     display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in;
     border-radius: 22px; -webkit-tap-highlight-color: transparent;
@@ -208,8 +209,8 @@
 <!--
   ===== НАСТРОЙКИ =====
   Ссылка на игру в RuStore — меняется в двух местах ниже (поиск по "rustore.ru/catalog").
-  Скриншоты: положите файлы shot-1.png … shot-6.png в эту же папку репозитория.
-  Каких файлов нет — те просто не показываются.
+  Скриншоты: screenshots/ru/shot-1.png … shot-6.png (русские) и screenshots/en/shot-1.png … shot-6.png (английские).
+  Если английского скриншота нет, показывается русский; каких файлов нет совсем — те не показываются.
   Иконка для превью в соцсетях: icon-512.png в эту же папку (необязательно).
 -->
 
@@ -332,12 +333,12 @@
       <h2 class="title" data-i18n="shotsTitle">Скриншоты</h2>
       <p class="sub" data-i18n="shotsSub">Как выглядит игра на телефоне.</p>
       <div class="shots" id="shots">
-        <figure><button type="button" aria-label="Открыть скриншот: Игровое поле 5 на 5" data-i18n-aria="shotOpen1"><img src="shot-1.png" alt="Игровое поле 5 на 5" loading="lazy" data-i18n-alt="shot1"></button></figure>
-        <figure><button type="button" aria-label="Открыть скриншот: Уровень пройден на три звезды" data-i18n-aria="shotOpen2"><img src="shot-2.png" alt="Уровень пройден на три звезды" loading="lazy" data-i18n-alt="shot2"></button></figure>
-        <figure><button type="button" aria-label="Открыть скриншот: Подсказка на поле" data-i18n-aria="shotOpen3"><img src="shot-3.png" alt="Подсказка на поле" loading="lazy" data-i18n-alt="shot3"></button></figure>
-        <figure><button type="button" aria-label="Открыть скриншот: Сложное поле 7 на 7" data-i18n-aria="shotOpen4"><img src="shot-4.png" alt="Сложное поле 7 на 7" loading="lazy" data-i18n-alt="shot4"></button></figure>
-        <figure><button type="button" aria-label="Открыть скриншот: Список уровней со звёздами" data-i18n-aria="shotOpen5"><img src="shot-5.png" alt="Список уровней со звёздами" loading="lazy" data-i18n-alt="shot5"></button></figure>
-        <figure><button type="button" aria-label="Открыть скриншот: Главное меню" data-i18n-aria="shotOpen6"><img src="shot-6.png" alt="Главное меню" loading="lazy" data-i18n-alt="shot6"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Игровое поле 5 на 5" data-i18n-aria="shotOpen1"><img src="screenshots/ru/shot-1.png" data-shot="1" alt="Игровое поле 5 на 5" loading="lazy" data-i18n-alt="shot1"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Уровень пройден на три звезды" data-i18n-aria="shotOpen2"><img src="screenshots/ru/shot-2.png" data-shot="2" alt="Уровень пройден на три звезды" loading="lazy" data-i18n-alt="shot2"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Подсказка на поле" data-i18n-aria="shotOpen3"><img src="screenshots/ru/shot-3.png" data-shot="3" alt="Подсказка на поле" loading="lazy" data-i18n-alt="shot3"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Сложное поле 7 на 7" data-i18n-aria="shotOpen4"><img src="screenshots/ru/shot-4.png" data-shot="4" alt="Сложное поле 7 на 7" loading="lazy" data-i18n-alt="shot4"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Список уровней со звёздами" data-i18n-aria="shotOpen5"><img src="screenshots/ru/shot-5.png" data-shot="5" alt="Список уровней со звёздами" loading="lazy" data-i18n-alt="shot5"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Главное меню" data-i18n-aria="shotOpen6"><img src="screenshots/ru/shot-6.png" data-shot="6" alt="Главное меню" loading="lazy" data-i18n-alt="shot6"></button></figure>
       </div>
       <p class="shots-empty" id="shots-empty" hidden data-i18n="shotsEmpty">Скриншоты скоро появятся.</p>
     </div>
@@ -485,6 +486,7 @@
       b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
     });
     if (window.renderBoard) window.renderBoard();
+    if (window.updateShots) window.updateShots();
     if (remember) { try { localStorage.setItem('lang', lang); } catch (e) {} }
   }
 
@@ -506,28 +508,46 @@
     }
   })();
 
-  // Скриншоты: прячем те, которых нет
-  (function () {
+  // Скриншоты на нужном языке.
+  // Русские: screenshots/ru/shot-1.png … shot-6.png, английские: screenshots/en/shot-1.png … shot-6.png.
+  // Если английского файла нет — показывается русский; если нет и его — скриншот скрывается.
+  window.updateShots = function () {
     var box = document.getElementById('shots');
+    var empty = document.getElementById('shots-empty');
     var figs = box.querySelectorAll('figure');
-    var left = figs.length;
+    var pending = figs.length;
+    function done() {
+      if (--pending > 0) return;
+      var anyVisible = Array.prototype.some.call(figs, function (f) { return !f.hidden; });
+      box.hidden = !anyVisible;
+      empty.hidden = anyVisible;
+    }
     figs.forEach(function (f) {
       var img = f.querySelector('img');
-      function gone() {
-        f.remove();
-        if (--left === 0) { box.hidden = true; document.getElementById('shots-empty').hidden = false; }
+      var n = img.dataset.shot;
+      var ruSrc = 'screenshots/ru/shot-' + n + '.png';
+      var wanted = 'screenshots/' + (lang === 'en' ? 'en' : 'ru') + '/shot-' + n + '.png';
+      img.onload = function () { f.hidden = false; done(); };
+      img.onerror = function () {
+        if (img.getAttribute('src') !== ruSrc) { img.setAttribute('src', ruSrc); return; }
+        f.hidden = true; done();
+      };
+      if (img.getAttribute('src') === wanted && img.complete) {
+        // Картинка уже загружена (или уже не загрузилась) — результат известен сразу.
+        f.hidden = img.naturalWidth === 0;
+        done();
+      } else {
+        img.setAttribute('src', wanted);
       }
-      img.addEventListener('error', gone);
-      if (img.complete && img.naturalWidth === 0 && img.currentSrc) gone();
     });
-  })();
+  };
 
   // Просмотр скриншотов во весь экран
   (function () {
     var viewer = document.getElementById('viewer');
     var big = document.getElementById('viewer-img');
     var index = 0;
-    function list() { return Array.prototype.slice.call(document.querySelectorAll('#shots img')); }
+    function list() { return Array.prototype.slice.call(document.querySelectorAll('#shots figure:not([hidden]) img')); }
     function show(i) {
       var imgs = list();
       if (!imgs.length) return;
