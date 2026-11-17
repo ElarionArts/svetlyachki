@@ -58,6 +58,14 @@
   .brand b { color: var(--text); font-weight: 600; }
   header nav a { color: var(--dim); text-decoration: none; font-size: 15px; margin-left: 18px; }
   header nav a:hover { color: var(--accent); }
+  .right { display: flex; align-items: center; gap: 8px; }
+  .lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; margin-left: 18px; }
+  .lang button {
+    border: 0; background: none; color: var(--dim); font: inherit; font-size: 13px; font-weight: 700;
+    padding: 4px 10px; border-radius: 999px; cursor: pointer; letter-spacing: .5px;
+  }
+  .lang button[aria-pressed="true"] { background: var(--accent); color: #2b1d00; }
+  .lang button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
   /* первый экран */
   .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; padding: 56px 0 40px; }
@@ -185,6 +193,7 @@
     .features, .rules { grid-template-columns: 1fr; }
     h1 { font-size: 42px; }
     header nav { display: none; }
+    .lang { margin-left: 0; }
     .shots { grid-template-columns: repeat(2, minmax(0, 260px)); gap: 16px; }
   }
   @media (max-width: 340px) {
@@ -219,13 +228,19 @@
           <rect x="45.5" y="66.5" width="17" height="17" rx="4"/>
         </g>
       </svg>
-      <span><b>Светлячки</b> · ElarionArts</span>
+      <span><b data-i18n="name">Светлячки</b> · ElarionArts</span>
     </a>
-    <nav>
-      <a href="#features">Об игре</a>
-      <a href="#screens">Скриншоты</a>
-      <a href="#rules">Как играть</a>
-    </nav>
+    <div class="right">
+      <nav>
+        <a href="#features" data-i18n="navAbout">Об игре</a>
+        <a href="#screens" data-i18n="navShots">Скриншоты</a>
+        <a href="#rules" data-i18n="navRules">Как играть</a>
+      </nav>
+      <div class="lang" role="group" aria-label="Язык / Language">
+        <button type="button" data-lang="ru" aria-pressed="true">RU</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -233,7 +248,7 @@
 
   <div class="wrap hero">
     <div>
-      <svg class="hero-icon" viewBox="0 0 108 108" role="img" aria-label="Иконка игры Светлячки">
+      <svg class="hero-icon" viewBox="0 0 108 108" role="img" aria-label="Иконка игры Светлячки" data-i18n-aria="iconAlt">
         <defs>
           <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a2150"/><stop offset="1" stop-color="#0b1026"/></linearGradient>
           <radialGradient id="g" cx="54" cy="54" r="38" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffd54f" stop-opacity=".45"/><stop offset="1" stop-color="#ffd54f" stop-opacity="0"/></radialGradient>
@@ -251,62 +266,62 @@
           <rect x="45.5" y="66.5" width="17" height="17" rx="4"/>
         </g>
       </svg>
-      <h1>Светлячки</h1>
-      <p class="tagline">Зажгите всех светлячков</p>
-      <p class="lead">Спокойная логическая игра для Android. Нажатие переключает клетку и её соседей — звучит просто, но каждый ход меняет сразу несколько огоньков.</p>
+      <h1 data-i18n="name">Светлячки</h1>
+      <p class="tagline" data-i18n="tagline">Зажгите всех светлячков</p>
+      <p class="lead" data-i18n="lead">Спокойная логическая игра для Android. Нажатие переключает клетку и её соседей — звучит просто, но каждый ход меняет сразу несколько огоньков.</p>
       <div class="buttons">
         <a class="btn btn-main" href="https://www.rustore.ru/catalog/app/ru.elarionarts.svetlyachki" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12,16.5 6.5,11 7.9,9.6 11,12.7V3h2v9.7l3.1,-3.1 1.4,1.4zM5,19h14v2H5z"/></svg>
-          Скачать в RuStore
+          <span data-i18n="download">Скачать в RuStore</span>
         </a>
-        <span class="btn btn-ghost">Скоро в Google Play</span>
+        <span class="btn btn-ghost" data-i18n="soonGP">Скоро в Google Play</span>
       </div>
-      <p class="meta">Бесплатно · Android 7.0 и новее · без регистрации</p>
+      <p class="meta" data-i18n="meta">Бесплатно · Android 7.0 и новее · без регистрации</p>
     </div>
 
     <div class="demo" aria-labelledby="demo-title">
-      <h2 id="demo-title">Попробуйте прямо здесь</h2>
-      <p>Нажмите на клетку, чтобы зажечь всех светлячков</p>
-      <div class="board" id="board" role="group" aria-label="Поле 3 на 3"></div>
+      <h2 id="demo-title" data-i18n="demoTitle">Попробуйте прямо здесь</h2>
+      <p data-i18n="demoText">Нажмите на клетку, чтобы зажечь всех светлячков</p>
+      <div class="board" id="board" role="group" aria-label="Поле 3 на 3" data-i18n-aria="boardLabel"></div>
       <div class="status" id="status" aria-live="polite"></div>
-      <button class="reset" id="reset" type="button">Новое поле</button>
+      <button class="reset" id="reset" type="button" data-i18n="newBoard">Новое поле</button>
     </div>
   </div>
 
   <section id="features">
     <div class="wrap">
-      <h2 class="title">Об игре</h2>
-      <p class="sub">Логическая игра и головоломка для ума — на пару минут или на весь вечер.</p>
+      <h2 class="title" data-i18n="aboutTitle">Об игре</h2>
+      <p class="sub" data-i18n="aboutSub">Логическая игра и головоломка для ума — на пару минут или на весь вечер.</p>
       <div class="features">
         <div class="feature">
           <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#ffd54f" d="M4,4h7v7H4zM13,4h7v7h-7zM4,13h7v7H4zM13,13h7v7h-7z"/></svg></div>
-          <h3>150 уровней</h3>
-          <p>От разминки 3×3 до сложных полей 7×7. Первые уровни научат правилам.</p>
+          <h3 data-i18n="f1t">150 уровней</h3>
+          <p data-i18n="f1d">От разминки 3×3 до сложных полей 7×7. Первые уровни научат правилам.</p>
         </div>
         <div class="feature">
           <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#ffd54f" d="M12,17.27L18.18,21l-1.64,-7.03L22,9.24l-7.19,-0.61L12,2 9.19,8.63 2,9.24l5.46,4.73L5.82,21z"/></svg></div>
-          <h3>Три звезды</h3>
-          <p>У каждого уровня есть идеальное решение. Найдите его за минимальное число ходов.</p>
+          <h3 data-i18n="f2t">Три звезды</h3>
+          <p data-i18n="f2d">У каждого уровня есть идеальное решение. Найдите его за минимальное число ходов.</p>
         </div>
         <div class="feature">
           <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#ffd54f" d="M9,21c0,0.55 0.45,1 1,1h4c0.55,0 1,-0.45 1,-1v-1H9v1zM12,2C8.14,2 5,5.14 5,9c0,2.38 1.19,4.47 3,5.74V17c0,0.55 0.45,1 1,1h6c0.55,0 1,-0.45 1,-1v-2.26c1.81,-1.27 3,-3.36 3,-5.74 0,-3.86 -3.14,-7 -7,-7z"/></svg></div>
-          <h3>Подсказки</h3>
-          <p>Застряли? Подсказка покажет верный ход из кратчайшего решения.</p>
+          <h3 data-i18n="f3t">Подсказки</h3>
+          <p data-i18n="f3d">Застряли? Подсказка покажет верный ход из кратчайшего решения.</p>
         </div>
         <div class="feature">
           <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4dd0e1" d="M15,1H9v2h6V1zM11,14h2V8h-2v6zM19.03,7.39l1.42,-1.42c-0.43,-0.51 -0.9,-0.99 -1.41,-1.41l-1.42,1.42C16.07,4.74 14.12,4 12,4c-4.97,0 -9,4.03 -9,9s4.02,9 9,9 9,-4.03 9,-9c0,-2.12 -0.74,-4.07 -1.97,-5.61zM12,20c-3.87,0 -7,-3.13 -7,-7s3.13,-7 7,-7 7,3.13 7,7 -3.13,7 -7,7z"/></svg></div>
-          <h3>Короткие уровни</h3>
-          <p>От 30 секунд до пары минут — удобно в дороге и в очереди.</p>
+          <h3 data-i18n="f4t">Короткие уровни</h3>
+          <p data-i18n="f4d">От 30 секунд до пары минут — удобно в дороге и в очереди.</p>
         </div>
         <div class="feature">
           <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4dd0e1" d="M21,16v-2l-8,-5V3.5c0,-0.83 -0.67,-1.5 -1.5,-1.5S10,2.67 10,3.5V9l-8,5v2l8,-2.5V19l-2,1.5V22l3.5,-1 3.5,1v-1.5L13,19v-5.5l8,2.5z"/></svg></div>
-          <h3>Без интернета</h3>
-          <p>Играйте в метро, в самолёте или на даче — сеть не нужна.</p>
+          <h3 data-i18n="f5t">Без интернета</h3>
+          <p data-i18n="f5d">Играйте в метро, в самолёте или на даче — сеть не нужна.</p>
         </div>
         <div class="feature">
           <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4dd0e1" d="M12,3c-4.97,0 -9,4.03 -9,9s4.03,9 9,9 9,-4.03 9,-9c0,-0.46 -0.04,-0.92 -0.1,-1.36 -0.98,1.37 -2.58,2.26 -4.4,2.26 -2.98,0 -5.4,-2.42 -5.4,-5.4 0,-1.81 0.89,-3.42 2.26,-4.4C12.92,3.04 12.46,3 12,3z"/></svg></div>
-          <h3>Спокойный дизайн</h3>
-          <p>Тёмная ночная тема, мягкое свечение и никакой спешки.</p>
+          <h3 data-i18n="f6t">Спокойный дизайн</h3>
+          <p data-i18n="f6d">Тёмная ночная тема, мягкое свечение и никакой спешки.</p>
         </div>
       </div>
     </div>
@@ -314,28 +329,28 @@
 
   <section id="screens">
     <div class="wrap">
-      <h2 class="title">Скриншоты</h2>
-      <p class="sub">Как выглядит игра на телефоне.</p>
+      <h2 class="title" data-i18n="shotsTitle">Скриншоты</h2>
+      <p class="sub" data-i18n="shotsSub">Как выглядит игра на телефоне.</p>
       <div class="shots" id="shots">
-        <figure><button type="button" aria-label="Открыть скриншот: Игровое поле 5 на 5"><img src="shot-1.png" alt="Игровое поле 5 на 5" loading="lazy"></button></figure>
-        <figure><button type="button" aria-label="Открыть скриншот: Уровень пройден на три звезды"><img src="shot-2.png" alt="Уровень пройден на три звезды" loading="lazy"></button></figure>
-        <figure><button type="button" aria-label="Открыть скриншот: Подсказка на поле"><img src="shot-3.png" alt="Подсказка на поле" loading="lazy"></button></figure>
-        <figure><button type="button" aria-label="Открыть скриншот: Сложное поле 7 на 7"><img src="shot-4.png" alt="Сложное поле 7 на 7" loading="lazy"></button></figure>
-        <figure><button type="button" aria-label="Открыть скриншот: Список уровней со звёздами"><img src="shot-5.png" alt="Список уровней со звёздами" loading="lazy"></button></figure>
-        <figure><button type="button" aria-label="Открыть скриншот: Главное меню"><img src="shot-6.png" alt="Главное меню" loading="lazy"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Игровое поле 5 на 5" data-i18n-aria="shotOpen1"><img src="shot-1.png" alt="Игровое поле 5 на 5" loading="lazy" data-i18n-alt="shot1"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Уровень пройден на три звезды" data-i18n-aria="shotOpen2"><img src="shot-2.png" alt="Уровень пройден на три звезды" loading="lazy" data-i18n-alt="shot2"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Подсказка на поле" data-i18n-aria="shotOpen3"><img src="shot-3.png" alt="Подсказка на поле" loading="lazy" data-i18n-alt="shot3"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Сложное поле 7 на 7" data-i18n-aria="shotOpen4"><img src="shot-4.png" alt="Сложное поле 7 на 7" loading="lazy" data-i18n-alt="shot4"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Список уровней со звёздами" data-i18n-aria="shotOpen5"><img src="shot-5.png" alt="Список уровней со звёздами" loading="lazy" data-i18n-alt="shot5"></button></figure>
+        <figure><button type="button" aria-label="Открыть скриншот: Главное меню" data-i18n-aria="shotOpen6"><img src="shot-6.png" alt="Главное меню" loading="lazy" data-i18n-alt="shot6"></button></figure>
       </div>
-      <p class="shots-empty" id="shots-empty" hidden>Скриншоты скоро появятся.</p>
+      <p class="shots-empty" id="shots-empty" hidden data-i18n="shotsEmpty">Скриншоты скоро появятся.</p>
     </div>
   </section>
 
   <section id="rules">
     <div class="wrap">
-      <h2 class="title">Как играть</h2>
-      <p class="sub">Правила понятны за минуту.</p>
+      <h2 class="title" data-i18n="rulesTitle">Как играть</h2>
+      <p class="sub" data-i18n="rulesSub">Правила понятны за минуту.</p>
       <div class="rules">
-        <div class="rule"><p>Нажатие переключает клетку и её соседей сверху, снизу, слева и справа.</p></div>
-        <div class="rule"><p>Светящиеся клетки гаснут, тёмные — загораются.</p></div>
-        <div class="rule"><p>Зажгите все клетки, пока не закончились ходы. Меньше ходов — больше звёзд.</p></div>
+        <div class="rule"><p data-i18n="r1">Нажатие переключает клетку и её соседей сверху, снизу, слева и справа.</p></div>
+        <div class="rule"><p data-i18n="r2">Светящиеся клетки гаснут, тёмные — загораются.</p></div>
+        <div class="rule"><p data-i18n="r3">Зажгите все клетки, пока не закончились ходы. Меньше ходов — больше звёзд.</p></div>
       </div>
     </div>
   </section>
@@ -343,12 +358,12 @@
   <section>
     <div class="wrap">
       <div class="cta">
-        <h2 class="title">Зажгите всех светлячков</h2>
-        <p class="sub">Бесплатная игра для Android.</p>
+        <h2 class="title" data-i18n="tagline">Зажгите всех светлячков</h2>
+        <p class="sub" data-i18n="ctaSub">Бесплатная игра для Android.</p>
         <div class="buttons">
           <a class="btn btn-main" href="https://www.rustore.ru/catalog/app/ru.elarionarts.svetlyachki" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12,16.5 6.5,11 7.9,9.6 11,12.7V3h2v9.7l3.1,-3.1 1.4,1.4zM5,19h14v2H5z"/></svg>
-            Скачать в RuStore
+            <span data-i18n="download">Скачать в RuStore</span>
           </a>
         </div>
       </div>
@@ -357,18 +372,18 @@
 
 </main>
 
-<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Скриншот">
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Скриншот" data-i18n-aria="viewer">
   <img id="viewer-img" alt="">
-  <button class="prev" id="viewer-prev" type="button" aria-label="Предыдущий">‹</button>
-  <button class="next" id="viewer-next" type="button" aria-label="Следующий">›</button>
-  <button class="close" id="viewer-close" type="button" aria-label="Закрыть">×</button>
+  <button class="prev" id="viewer-prev" type="button" aria-label="Предыдущий" data-i18n-aria="prev">‹</button>
+  <button class="next" id="viewer-next" type="button" aria-label="Следующий" data-i18n-aria="next">›</button>
+  <button class="close" id="viewer-close" type="button" aria-label="Закрыть" data-i18n-aria="close">×</button>
 </div>
 
 <footer>
   <div class="wrap">
     <span>© 2026 ElarionArts</span>
     <span>
-      <a href="privacy-policy.html">Политика конфиденциальности</a>
+      <a href="privacy-policy.html" id="privacy-link" data-i18n="privacy">Политика конфиденциальности</a>
       &nbsp;·&nbsp;
       <a href="mailto:elarionarts@gmail.com">elarionarts@gmail.com</a>
     </span>
@@ -376,6 +391,107 @@
 </footer>
 
 <script>
+  // ===== Тексты на двух языках =====
+  var I18N = {
+    ru: {
+      title: 'Светлячки: головоломка — логическая игра для Android',
+      name: 'Светлячки', iconAlt: 'Иконка игры Светлячки',
+      navAbout: 'Об игре', navShots: 'Скриншоты', navRules: 'Как играть',
+      tagline: 'Зажгите всех светлячков',
+      lead: 'Спокойная логическая игра для Android. Нажатие переключает клетку и её соседей — звучит просто, но каждый ход меняет сразу несколько огоньков.',
+      download: 'Скачать в RuStore', soonGP: 'Скоро в Google Play',
+      meta: 'Бесплатно · Android 7.0 и новее · без регистрации',
+      demoTitle: 'Попробуйте прямо здесь', demoText: 'Нажмите на клетку, чтобы зажечь всех светлячков',
+      boardLabel: 'Поле 3 на 3', newBoard: 'Новое поле',
+      win: 'Все светлячки светятся! В игре таких уровней 150.',
+      cell: 'Клетка', cellOn: 'светится', cellOff: 'не светится',
+      aboutTitle: 'Об игре', aboutSub: 'Логическая игра и головоломка для ума — на пару минут или на весь вечер.',
+      f1t: '150 уровней', f1d: 'От разминки 3×3 до сложных полей 7×7. Первые уровни научат правилам.',
+      f2t: 'Три звезды', f2d: 'У каждого уровня есть идеальное решение. Найдите его за минимальное число ходов.',
+      f3t: 'Подсказки', f3d: 'Застряли? Подсказка покажет верный ход из кратчайшего решения.',
+      f4t: 'Короткие уровни', f4d: 'От 30 секунд до пары минут — удобно в дороге и в очереди.',
+      f5t: 'Без интернета', f5d: 'Играйте в метро, в самолёте или на даче — сеть не нужна.',
+      f6t: 'Спокойный дизайн', f6d: 'Тёмная ночная тема, мягкое свечение и никакой спешки.',
+      shotsTitle: 'Скриншоты', shotsSub: 'Как выглядит игра на телефоне.', shotsEmpty: 'Скриншоты скоро появятся.',
+      shot1: 'Игровое поле 5 на 5', shot2: 'Уровень пройден на три звезды', shot3: 'Подсказка на поле',
+      shot4: 'Сложное поле 7 на 7', shot5: 'Список уровней со звёздами', shot6: 'Главное меню',
+      shotOpen: 'Открыть скриншот: ',
+      rulesTitle: 'Как играть', rulesSub: 'Правила понятны за минуту.',
+      r1: 'Нажатие переключает клетку и её соседей сверху, снизу, слева и справа.',
+      r2: 'Светящиеся клетки гаснут, тёмные — загораются.',
+      r3: 'Зажгите все клетки, пока не закончились ходы. Меньше ходов — больше звёзд.',
+      ctaSub: 'Бесплатная игра для Android.',
+      privacy: 'Политика конфиденциальности', privacyHref: 'privacy-policy.html#ru',
+      viewer: 'Скриншот', prev: 'Предыдущий', next: 'Следующий', close: 'Закрыть'
+    },
+    en: {
+      title: 'Fireflies: Light Puzzle — a logic game for Android',
+      name: 'Fireflies', iconAlt: 'Fireflies game icon',
+      navAbout: 'About', navShots: 'Screenshots', navRules: 'How to play',
+      tagline: 'Light up every firefly',
+      lead: 'A calm logic game for Android. A tap switches a cell and its neighbours — sounds simple, but every move changes several lights at once.',
+      download: 'Get it on RuStore', soonGP: 'Coming soon to Google Play',
+      meta: 'Free · Android 7.0+ · no sign-up',
+      demoTitle: 'Try it right here', demoText: 'Tap a cell to light up every firefly',
+      boardLabel: '3 by 3 board', newBoard: 'New board',
+      win: 'Every firefly is lit! The game has 150 levels like this.',
+      cell: 'Cell', cellOn: 'lit', cellOff: 'dark',
+      aboutTitle: 'About the game', aboutSub: 'A logic puzzle and brain teaser — for a couple of minutes or a whole evening.',
+      f1t: '150 levels', f1d: 'From a 3×3 warm-up to tricky 7×7 boards. The first levels teach you the rules.',
+      f2t: 'Three stars', f2d: 'Every level has a perfect solution. Find it in the fewest moves.',
+      f3t: 'Hints', f3d: 'Stuck? A hint shows the right move from the shortest solution.',
+      f4t: 'Short levels', f4d: '30 seconds to a couple of minutes — perfect for a commute or a queue.',
+      f5t: 'Play offline', f5d: 'Play on the subway, on a plane or out of town — no network needed.',
+      f6t: 'Calm design', f6d: 'A dark night theme, a soft glow and no rush.',
+      shotsTitle: 'Screenshots', shotsSub: 'What the game looks like on a phone.', shotsEmpty: 'Screenshots coming soon.',
+      shot1: '5 by 5 game board', shot2: 'Level complete with three stars', shot3: 'A hint on the board',
+      shot4: 'A tricky 7 by 7 board', shot5: 'Level list with stars', shot6: 'Main menu',
+      shotOpen: 'Open screenshot: ',
+      rulesTitle: 'How to play', rulesSub: 'Learn the rules in a minute.',
+      r1: 'A tap switches the cell and its neighbours above, below, left and right.',
+      r2: 'Lit cells go dark, dark cells light up.',
+      r3: 'Light up every cell before you run out of moves. Fewer moves earn more stars.',
+      ctaSub: 'A free game for Android.',
+      privacy: 'Privacy policy', privacyHref: 'privacy-policy.html#en',
+      viewer: 'Screenshot', prev: 'Previous', next: 'Next', close: 'Close'
+    }
+  };
+
+  var lang = 'ru';
+  function t(key) { return (I18N[lang] && I18N[lang][key]) || I18N.ru[key] || ''; }
+
+  function pickLanguage() {
+    // 1) ?lang=en в адресе  2) выбор, сохранённый раньше  3) язык браузера
+    var fromUrl = new URLSearchParams(location.search).get('lang');
+    if (fromUrl && I18N[fromUrl]) return fromUrl;
+    try { var saved = localStorage.getItem('lang'); if (saved && I18N[saved]) return saved; } catch (e) {}
+    var nav = (navigator.language || 'ru').toLowerCase();
+    return nav.indexOf('ru') === 0 ? 'ru' : 'en';
+  }
+
+  function applyLanguage(next, remember) {
+    lang = next;
+    document.documentElement.lang = lang;
+    document.title = t('title');
+    document.querySelectorAll('[data-i18n]').forEach(function (el) { el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll('[data-i18n-alt]').forEach(function (el) { el.alt = t(el.dataset.i18nAlt); });
+    document.querySelectorAll('[data-i18n-aria]').forEach(function (el) {
+      var key = el.dataset.i18nAria;
+      var m = key.match(/^shotOpen(\d)$/);
+      el.setAttribute('aria-label', m ? t('shotOpen') + t('shot' + m[1]) : t(key));
+    });
+    document.getElementById('privacy-link').setAttribute('href', t('privacyHref'));
+    document.querySelectorAll('.lang button').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
+    });
+    if (window.renderBoard) window.renderBoard();
+    if (remember) { try { localStorage.setItem('lang', lang); } catch (e) {} }
+  }
+
+  document.querySelectorAll('.lang button').forEach(function (b) {
+    b.addEventListener('click', function () { applyLanguage(b.dataset.lang, true); });
+  });
+
   // Огоньки на фоне
   (function () {
     var sky = document.getElementById('sky');
@@ -468,7 +584,7 @@
     function render() {
       cells.forEach(function (b, k) {
         b.classList.toggle('on', lit[k]);
-        b.setAttribute('aria-label', 'Клетка ' + (k + 1) + (lit[k] ? ', светится' : ', не светится'));
+        b.setAttribute('aria-label', t('cell') + ' ' + (k + 1) + ', ' + (lit[k] ? t('cellOn') : t('cellOff')));
       });
     }
     function newGame() {
@@ -494,7 +610,7 @@
           });
           render();
           if (lit.every(Boolean)) {
-            statusEl.textContent = 'Все светлячки светятся! В игре таких уровней 150.';
+            statusEl.textContent = t('win');
             statusEl.classList.add('win');
           }
         });
@@ -503,8 +619,14 @@
       })(i);
     }
     document.getElementById('reset').addEventListener('click', newGame);
+    window.renderBoard = function () {
+      render();
+      if (lit.every(Boolean)) statusEl.textContent = t('win');
+    };
     newGame();
   })();
+
+  applyLanguage(pickLanguage(), false);
 </script>
 </body>
 </html>
