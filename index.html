@@ -386,6 +386,8 @@
     <span>
       <a href="privacy-policy.html" id="privacy-link" data-i18n="privacy">Политика конфиденциальности</a>
       &nbsp;·&nbsp;
+      <a href="terms.html" id="terms-link" data-i18n="terms">Условия использования</a>
+      &nbsp;·&nbsp;
       <a href="mailto:elarionarts@gmail.com">elarionarts@gmail.com</a>
     </span>
   </div>
@@ -423,6 +425,7 @@
       r3: 'Зажгите все клетки, пока не закончились ходы. Меньше ходов — больше звёзд.',
       ctaSub: 'Бесплатная игра для Android.',
       privacy: 'Политика конфиденциальности', privacyHref: 'privacy-policy.html#ru',
+      terms: 'Условия использования', termsHref: 'terms.html#ru',
       viewer: 'Скриншот', prev: 'Предыдущий', next: 'Следующий', close: 'Закрыть'
     },
     en: {
@@ -454,6 +457,7 @@
       r3: 'Light up every cell before you run out of moves. Fewer moves earn more stars.',
       ctaSub: 'A free game for Android.',
       privacy: 'Privacy policy', privacyHref: 'privacy-policy.html#en',
+      terms: 'Terms of Use', termsHref: 'terms.html#en',
       viewer: 'Screenshot', prev: 'Previous', next: 'Next', close: 'Close'
     }
   };
@@ -482,6 +486,7 @@
       el.setAttribute('aria-label', m ? t('shotOpen') + t('shot' + m[1]) : t(key));
     });
     document.getElementById('privacy-link').setAttribute('href', t('privacyHref'));
+    document.getElementById('terms-link').setAttribute('href', t('termsHref'));
     document.querySelectorAll('.lang button').forEach(function (b) {
       b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
     });
