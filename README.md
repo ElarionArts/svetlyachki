@@ -1,4 +1,4 @@
-# Fireflies: Light Puzzle · Светлячки: головоломка
+# Fireflies: Logic Puzzle · Светлячки: головоломка
 
 A logic puzzle for Android by **ElarionArts**.
 
@@ -14,12 +14,13 @@ Tap a cell to switch it along with its neighbours above, below, left and right. 
 - **Website:** https://elarionarts.github.io/svetlyachki/
 - **RuStore:** https://www.rustore.ru/catalog/app/ru.elarionarts.svetlyachki
 - **Google Play:** coming soon
-- **Privacy policy:** https://elarionarts.github.io/svetlyachki/privacy-policy.html
+- **Privacy policy:** https://elarionarts.github.io/svetlyachki/privacy-policy.html?lang=en
+- **Terms of use:** https://elarionarts.github.io/svetlyachki/terms.html?lang=en
 - **Contact:** elarionarts@gmail.com
 
 ## About this repository
 
-This repository hosts the game's website on GitHub Pages: the landing page, screenshots and privacy policy.
+This repository hosts the game's website on GitHub Pages: the landing page, screenshots, privacy policy and terms of use.
 
 ---
 
@@ -39,11 +40,12 @@ This repository hosts the game's website on GitHub Pages: the landing page, scre
 - **Сайт:** https://elarionarts.github.io/svetlyachki/
 - **RuStore:** https://www.rustore.ru/catalog/app/ru.elarionarts.svetlyachki
 - **Google Play:** скоро
-- **Политика конфиденциальности:** https://elarionarts.github.io/svetlyachki/privacy-policy.html
+- **Политика конфиденциальности:** https://elarionarts.github.io/svetlyachki/privacy-policy.html?lang=ru
+- **Условия использования:** https://elarionarts.github.io/svetlyachki/terms.html?lang=ru
 - **Связь:** elarionarts@gmail.com
 
 ### Об этом репозитории
 
-В этом репозитории лежит сайт игры (GitHub Pages): главная страница, скриншоты и политика конфиденциальности.
+В этом репозитории лежит сайт игры (GitHub Pages): главная страница, скриншоты, политика конфиденциальности и условия использования.
 
 © 2026 ElarionArts
