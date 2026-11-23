@@ -71,6 +71,8 @@
     background: rgba(77, 208, 225, .08); border: 1px solid rgba(77, 208, 225, .25);
   }
   footer { margin-top: 32px; color: var(--dim); font-size: 14px; text-align: center; }
+  a.studio-link { color: inherit; text-decoration: none; }
+  a.studio-link:hover, a.studio-link:focus-visible { color: #fff; }
   a.home {
     display: inline-flex; align-items: center; gap: 6px; margin-top: 18px; color: var(--dim);
     text-decoration: none; font-weight: 600; font-size: 15px;
@@ -116,7 +118,7 @@
         <rect x="45.5" y="66.5" width="17" height="17" rx="4"/>
       </g>
     </svg>
-    <div class="brand"><b><span class="ru">Светлячки: головоломка</span><span class="en">Fireflies: Logic Puzzle</span></b>ElarionArts</div>
+    <div class="brand"><b><span class="ru">Светлячки: головоломка</span><span class="en">Fireflies: Logic Puzzle</span></b><a class="studio-link" href="../">ElarionArts</a></div>
     <div class="lang" role="group" aria-label="Язык / Language">
       <button type="button" data-lang="ru" aria-pressed="false">RU</button>
       <button type="button" data-lang="en" aria-pressed="false">EN</button>
@@ -193,7 +195,7 @@
     <a class="home" href="index.html?lang=en"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M13 8H3.5M5.75 5.75 3.5 8l2.25 2.25" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Back to home</span></a>
   </article>
 
-  <footer>© 2026 ElarionArts</footer>
+  <footer>© 2026 <a class="studio-link" href="../">ElarionArts</a></footer>
 </div>
 <script>
   (function () {
@@ -213,6 +215,13 @@
       b.addEventListener('click', function () { apply(b.dataset.lang, true); });
     });
     apply(document.documentElement.getAttribute('data-lang') || 'ru', false);
+    // При открытии с диска папка не открывает index.html сама: дописываем его к ссылкам
+    if (location.protocol === 'file:') {
+      document.querySelectorAll('a[href$="/"]').forEach(function (a) {
+        var h = a.getAttribute('href');
+        if (!/^[a-z]+:/i.test(h)) a.setAttribute('href', h + 'index.html');
+      });
+    }
   })();
 </script>
 </body>

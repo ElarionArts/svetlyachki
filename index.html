@@ -56,6 +56,9 @@
   .brand { display: flex; align-items: center; gap: 10px; color: var(--dim); text-decoration: none; font-size: 15px; }
   .brand svg { width: 32px; height: 32px; border-radius: 8px; }
   .brand b { color: var(--text); font-weight: 600; }
+  .brand a { color: inherit; text-decoration: none; }
+  .brand-game { display: flex; align-items: center; gap: 10px; }
+  .brand .studio-link:hover, .brand-game:hover b { color: #fff; }
   header nav a { color: var(--dim); text-decoration: none; font-size: 15px; margin-left: 18px; }
   header nav a:hover { color: #fff; }
   .right { display: flex; align-items: center; gap: 8px; }
@@ -188,6 +191,7 @@
   footer a { color: var(--dim); }
   footer .foot-links { display: flex; flex-wrap: wrap; gap: 6px 24px; }
   footer .foot-links a { white-space: nowrap; }
+  footer .copy a { text-decoration: none; }
 
   @media (max-width: 860px) {
     .hero { grid-template-columns: 1fr; gap: 36px; padding-top: 36px; text-align: center; }
@@ -220,7 +224,8 @@
 
 <header>
   <div class="wrap">
-    <a class="brand" href="#top">
+    <div class="brand">
+      <a class="brand-game" href="#top">
       <svg viewBox="0 0 108 108" aria-hidden="true">
         <rect width="108" height="108" fill="#0b1026"/>
         <g fill="#2a3566">
@@ -233,8 +238,11 @@
           <rect x="45.5" y="66.5" width="17" height="17" rx="4"/>
         </g>
       </svg>
-      <span><b data-i18n="name">Светлячки</b> · ElarionArts</span>
-    </a>
+        <b data-i18n="name">Светлячки</b>
+      </a>
+      <span aria-hidden="true">·</span>
+      <a class="studio-link" href="../">ElarionArts</a>
+    </div>
     <div class="right">
       <nav>
         <a href="#features" data-i18n="navAbout">Об игре</a>
@@ -391,7 +399,7 @@
       <a href="terms.html" id="terms-link" data-i18n="terms">Условия использования</a>
       <a href="mailto:elarionarts@gmail.com">elarionarts@gmail.com</a>
     </nav>
-    <span class="copy">© 2026 ElarionArts</span>
+    <span class="copy">© 2026 <a class="studio-link" href="../">ElarionArts</a></span>
   </div>
 </footer>
 
@@ -654,6 +662,14 @@
   })();
 
   applyLanguage(pickLanguage(), false);
+
+  // При открытии с диска папка не открывает index.html сама: дописываем его к ссылкам
+  if (location.protocol === 'file:') {
+    document.querySelectorAll('a[href$="/"]').forEach(function (a) {
+      var h = a.getAttribute('href');
+      if (!/^[a-z]+:/i.test(h)) a.setAttribute('href', h + 'index.html');
+    });
+  }
 </script>
 </body>
 </html>
