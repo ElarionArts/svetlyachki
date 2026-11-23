@@ -1,4 +1,4 @@
-# Fireflies: Logic Puzzle · Светлячки: головоломка
+# Fireflies: Logic Puzzle
 
 A logic puzzle for Android by **ElarionArts**.
 
@@ -24,7 +24,7 @@ This repository hosts the game's website on GitHub Pages: the landing page, scre
 
 ---
 
-## На русском
+# Светлячки: головоломка
 
 **Светлячки** — логическая игра для Android от **ElarionArts**.
 
@@ -35,7 +35,7 @@ This repository hosts the game's website on GitHub Pages: the landing page, scre
 - Подсказки показывают ход из кратчайшего решения
 - Играйте без интернета и без регистрации
 
-### Ссылки
+## Ссылки
 
 - **Сайт:** https://elarionarts.github.io/svetlyachki/
 - **RuStore:** https://www.rustore.ru/catalog/app/ru.elarionarts.svetlyachki
@@ -44,7 +44,7 @@ This repository hosts the game's website on GitHub Pages: the landing page, scre
 - **Условия использования:** https://elarionarts.github.io/svetlyachki/terms.html?lang=ru
 - **Связь:** elarionarts@gmail.com
 
-### Об этом репозитории
+## Об этом репозитории
 
 В этом репозитории лежит сайт игры (GitHub Pages): главная страница, скриншоты, политика конфиденциальности и условия использования.
 
