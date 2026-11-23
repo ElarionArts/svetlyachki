@@ -37,7 +37,7 @@
     font: 17px/1.6 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
   a { color: var(--teal); }
-  a:hover { color: var(--accent); }
+  a:hover { color: #fff; }
   .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
 
   /* звёздочки-огоньки на фоне */
@@ -57,14 +57,15 @@
   .brand svg { width: 32px; height: 32px; border-radius: 8px; }
   .brand b { color: var(--text); font-weight: 600; }
   header nav a { color: var(--dim); text-decoration: none; font-size: 15px; margin-left: 18px; }
-  header nav a:hover { color: var(--accent); }
+  header nav a:hover { color: #fff; }
   .right { display: flex; align-items: center; gap: 8px; }
   .lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; margin-left: 18px; }
   .lang button {
     border: 0; background: none; color: var(--dim); font: inherit; font-size: 13px; font-weight: 700;
     padding: 4px 10px; border-radius: 999px; cursor: pointer; letter-spacing: .5px;
   }
-  .lang button[aria-pressed="true"] { background: var(--accent); color: #2b1d00; }
+  .lang button[aria-pressed="false"]:hover { color: #fff; }
+  .lang button[aria-pressed="true"] { background: var(--accent); color: #2b1d00; cursor: default; }
   .lang button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
   /* первый экран */
@@ -110,7 +111,7 @@
     margin-top: 8px; background: none; border: 1px solid var(--line); color: var(--dim);
     border-radius: 999px; padding: 6px 16px; font: inherit; font-size: 14px; cursor: pointer;
   }
-  .reset:hover { color: var(--accent); border-color: var(--accent); }
+  .reset:hover { color: #fff; border-color: #fff; }
 
   /* секции */
   section { padding: 44px 0; }
@@ -185,6 +186,8 @@
   footer { padding: 40px 0 48px; color: var(--dim); font-size: 14px; }
   footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 24px; }
   footer a { color: var(--dim); }
+  footer .foot-links { display: flex; flex-wrap: wrap; gap: 6px 24px; }
+  footer .foot-links a { white-space: nowrap; }
 
   @media (max-width: 860px) {
     .hero { grid-template-columns: 1fr; gap: 36px; padding-top: 36px; text-align: center; }
@@ -196,6 +199,7 @@
     header nav { display: none; }
     .lang { margin-left: 0; }
     .shots { grid-template-columns: repeat(2, minmax(0, 260px)); gap: 16px; }
+    footer .wrap { flex-direction: column; gap: 14px; }
   }
   @media (max-width: 340px) {
     .shots { grid-template-columns: minmax(0, 280px); }
@@ -382,14 +386,12 @@
 
 <footer>
   <div class="wrap">
-    <span>© 2026 ElarionArts</span>
-    <span>
+    <nav class="foot-links">
       <a href="privacy-policy.html" id="privacy-link" data-i18n="privacy">Политика конфиденциальности</a>
-      &nbsp;·&nbsp;
       <a href="terms.html" id="terms-link" data-i18n="terms">Условия использования</a>
-      &nbsp;·&nbsp;
       <a href="mailto:elarionarts@gmail.com">elarionarts@gmail.com</a>
-    </span>
+    </nav>
+    <span class="copy">© 2026 ElarionArts</span>
   </div>
 </footer>
 
@@ -429,7 +431,7 @@
       viewer: 'Скриншот', prev: 'Предыдущий', next: 'Следующий', close: 'Закрыть'
     },
     en: {
-      title: 'Fireflies: Light Puzzle — a logic game for Android',
+      title: 'Fireflies: Logic Puzzle — a logic game for Android',
       name: 'Fireflies', iconAlt: 'Fireflies game icon',
       navAbout: 'About', navShots: 'Screenshots', navRules: 'How to play',
       tagline: 'Light up every firefly',

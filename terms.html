@@ -3,8 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+  // Язык страницы: ?lang= → #ru/#en → сохранённый выбор → язык браузера
+  (function () {
+    var l = null;
+    try { var q = new URLSearchParams(location.search).get('lang'); if (q === 'ru' || q === 'en') l = q; } catch (e) {}
+    if (!l && (location.hash === '#ru' || location.hash === '#en')) l = location.hash.slice(1);
+    if (!l) { try { var s = localStorage.getItem('lang'); if (s === 'ru' || s === 'en') l = s; } catch (e) {} }
+    if (!l) l = (navigator.language || 'ru').toLowerCase().indexOf('ru') === 0 ? 'ru' : 'en';
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.lang = l;
+  })();
+</script>
 <title>Условия использования — Светлячки: головоломка</title>
-<meta name="description" content="Условия использования мобильной игры «Светлячки: головоломка» от ElarionArts. Terms of Use of the mobile game “Fireflies: Light Puzzle”.">
+<meta name="description" content="Условия использования мобильной игры «Светлячки: головоломка» от ElarionArts. Terms of Use of the mobile game “Fireflies: Logic Puzzle”.">
 <meta name="robots" content="index, follow">
 <style>
   :root {
@@ -30,12 +42,18 @@
   header svg { flex: none; width: 56px; height: 56px; border-radius: 14px; }
   .brand { font-size: 15px; color: var(--dim); }
   .brand b { color: var(--accent); font-size: 20px; display: block; line-height: 1.2; }
-  nav.lang { display: flex; gap: 8px; margin: 24px 0 8px; }
-  nav.lang a {
-    color: var(--text); text-decoration: none; font-weight: 600; font-size: 15px;
-    padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px;
+  .brand { flex: 1; min-width: 0; }
+  .lang { flex: none; display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+  .lang button {
+    border: 0; background: none; color: var(--dim); font: inherit; font-size: 13px; font-weight: 700;
+    padding: 4px 10px; border-radius: 999px; cursor: pointer; letter-spacing: .5px; line-height: 1.4;
   }
-  nav.lang a:hover, nav.lang a:focus-visible { border-color: var(--accent); color: var(--accent); }
+  .lang button[aria-pressed="false"]:hover { color: #fff; }
+  .lang button[aria-pressed="true"] { background: var(--accent); color: #2b1d00; cursor: default; }
+  .lang button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  /* Показываем только выбранный язык; без JavaScript видны обе версии */
+  html[data-lang="ru"] .en, html[data-lang="en"] .ru { display: none; }
+  html:not([data-lang]) .lang, html:not([data-lang]) .brand .en { display: none; }
   article {
     background: var(--card); border: 1px solid var(--line); border-radius: 20px;
     padding: 28px 28px 20px; margin-top: 20px;
@@ -47,12 +65,23 @@
   ul { padding-left: 22px; }
   li { margin: 4px 0; }
   a { color: var(--teal); }
-  a:hover { color: var(--accent); }
+  a:hover { color: #fff; }
   .contact {
     margin-top: 28px; padding: 14px 18px; border-radius: 14px;
     background: rgba(77, 208, 225, .08); border: 1px solid rgba(77, 208, 225, .25);
   }
   footer { margin-top: 32px; color: var(--dim); font-size: 14px; text-align: center; }
+  a.home {
+    display: inline-block; margin-top: 18px; color: var(--dim);
+    text-decoration: none; font-weight: 600; font-size: 15px;
+  }
+  a.home:hover, a.home:focus-visible { color: #fff; }
+  @media (max-width: 400px) {
+    header { gap: 12px; }
+    header svg { width: 44px; height: 44px; border-radius: 11px; }
+    .brand { font-size: 14px; }
+    .brand b { font-size: 17px; }
+  }
   @media (max-width: 520px) {
     body { font-size: 16px; }
     article { padding: 22px 18px 14px; border-radius: 16px; }
@@ -62,7 +91,7 @@
     body { background: #fff; color: #000; }
     article { border: none; background: none; padding: 0; }
     h1, h2, p, li, .date, .brand { color: #000 !important; }
-    nav.lang, header svg { display: none; }
+    .lang, header svg, a.home { display: none; }
   }
 </style>
 </head>
@@ -87,17 +116,16 @@
         <rect x="45.5" y="66.5" width="17" height="17" rx="4"/>
       </g>
     </svg>
-    <div class="brand"><b>Светлячки: головоломка</b>ElarionArts</div>
+    <div class="brand"><b><span class="ru">Светлячки: головоломка</span><span class="en">Fireflies: Logic Puzzle</span></b>ElarionArts</div>
+    <div class="lang" role="group" aria-label="Язык / Language">
+      <button type="button" data-lang="ru" aria-pressed="false">RU</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
   </header>
 
-  <nav class="lang" aria-label="Язык / Language">
-    <a href="#ru" hreflang="ru">Русский</a>
-    <a href="#en" hreflang="en">English</a>
-  </nav>
-
   <!-- ===================================================== RU -->
   <!-- ===================================================== RU -->
-  <article id="ru" lang="ru">
+  <article class="ru" lang="ru">
     <h1>Условия использования игры «Светлячки: головоломка»</h1>
     <p class="date">Дата вступления в силу: 19 ноября 2026 года</p>
 
@@ -128,14 +156,15 @@
     <p>Разработчик может обновлять Игру и эти условия. Новая версия условий публикуется по этому же адресу с указанием даты вступления в силу. Продолжая пользоваться Игрой после обновления, вы соглашаетесь с новой версией.</p>
 
     <p class="contact">Контакт для вопросов: <a href="mailto:elarionarts@gmail.com">elarionarts@gmail.com</a></p>
+    <a class="home" href="index.html?lang=ru">← На главную</a>
   </article>
 
   <!-- ===================================================== EN -->
-  <article id="en" lang="en">
-    <h1>Terms of Use — “Fireflies: Light Puzzle”</h1>
+  <article class="en" lang="en">
+    <h1>Terms of Use — “Fireflies: Logic Puzzle”</h1>
     <p class="date">Effective date: 19 November 2026</p>
 
-    <p>These terms set out the rules for using the Android game “Fireflies: Light Puzzle” (the “Game”), developed by ElarionArts (the “Developer”). By installing or using the Game you agree to these terms. If you do not agree, please do not use the Game.</p>
+    <p>These terms set out the rules for using the Android game “Fireflies: Logic Puzzle” (the “Game”), developed by ElarionArts (the “Developer”). By installing or using the Game you agree to these terms. If you do not agree, please do not use the Game.</p>
 
     <h2>1. What you get</h2>
     <p>The Developer grants you a free, non-exclusive, non-transferable right to use the Game on your own devices for personal, non-commercial purposes. The Game is downloaded from official app stores (RuStore, Google Play) and is distributed free of charge.</p>
@@ -162,9 +191,30 @@
     <p>The Developer may update the Game and these terms. The new version of the terms will be published at this address with a new effective date. By continuing to use the Game after an update, you accept the new version.</p>
 
     <p class="contact">Contact: <a href="mailto:elarionarts@gmail.com">elarionarts@gmail.com</a></p>
+    <a class="home" href="index.html?lang=en">← Back to home</a>
   </article>
 
-  <footer><a href="./">elarionarts.github.io/svetlyachki</a> · © 2026 ElarionArts</footer>
+  <footer>© 2026 ElarionArts</footer>
 </div>
+<script>
+  (function () {
+    var titles = { ru: 'Условия использования — Светлячки: головоломка', en: 'Terms of Use — Fireflies: Logic Puzzle' };
+    var buttons = document.querySelectorAll('.lang button');
+    function apply(l, remember) {
+      document.documentElement.setAttribute('data-lang', l);
+      document.documentElement.lang = l;
+      document.title = titles[l];
+      buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === l)); });
+      if (remember) {
+        try { localStorage.setItem('lang', l); } catch (e) {}
+        try { history.replaceState(null, '', location.pathname + '#' + l); } catch (e) {}
+      }
+    }
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.dataset.lang, true); });
+    });
+    apply(document.documentElement.getAttribute('data-lang') || 'ru', false);
+  })();
+</script>
 </body>
 </html>

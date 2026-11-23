@@ -3,8 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+  // Язык страницы: ?lang= → #ru/#en → сохранённый выбор → язык браузера
+  (function () {
+    var l = null;
+    try { var q = new URLSearchParams(location.search).get('lang'); if (q === 'ru' || q === 'en') l = q; } catch (e) {}
+    if (!l && (location.hash === '#ru' || location.hash === '#en')) l = location.hash.slice(1);
+    if (!l) { try { var s = localStorage.getItem('lang'); if (s === 'ru' || s === 'en') l = s; } catch (e) {} }
+    if (!l) l = (navigator.language || 'ru').toLowerCase().indexOf('ru') === 0 ? 'ru' : 'en';
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.lang = l;
+  })();
+</script>
 <title>Политика конфиденциальности — Светлячки: головоломка</title>
-<meta name="description" content="Политика конфиденциальности мобильной игры «Светлячки: головоломка» от ElarionArts. Privacy policy of the mobile game “Fireflies: Light Puzzle”.">
+<meta name="description" content="Политика конфиденциальности мобильной игры «Светлячки: головоломка» от ElarionArts. Privacy policy of the mobile game “Fireflies: Logic Puzzle”.">
 <meta name="robots" content="index, follow">
 <style>
   :root {
@@ -30,12 +42,18 @@
   header svg { flex: none; width: 56px; height: 56px; border-radius: 14px; }
   .brand { font-size: 15px; color: var(--dim); }
   .brand b { color: var(--accent); font-size: 20px; display: block; line-height: 1.2; }
-  nav.lang { display: flex; gap: 8px; margin: 24px 0 8px; }
-  nav.lang a {
-    color: var(--text); text-decoration: none; font-weight: 600; font-size: 15px;
-    padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px;
+  .brand { flex: 1; min-width: 0; }
+  .lang { flex: none; display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+  .lang button {
+    border: 0; background: none; color: var(--dim); font: inherit; font-size: 13px; font-weight: 700;
+    padding: 4px 10px; border-radius: 999px; cursor: pointer; letter-spacing: .5px; line-height: 1.4;
   }
-  nav.lang a:hover, nav.lang a:focus-visible { border-color: var(--accent); color: var(--accent); }
+  .lang button[aria-pressed="false"]:hover { color: #fff; }
+  .lang button[aria-pressed="true"] { background: var(--accent); color: #2b1d00; cursor: default; }
+  .lang button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  /* Показываем только выбранный язык; без JavaScript видны обе версии */
+  html[data-lang="ru"] .en, html[data-lang="en"] .ru { display: none; }
+  html:not([data-lang]) .lang, html:not([data-lang]) .brand .en { display: none; }
   article {
     background: var(--card); border: 1px solid var(--line); border-radius: 20px;
     padding: 28px 28px 20px; margin-top: 20px;
@@ -47,12 +65,23 @@
   ul { padding-left: 22px; }
   li { margin: 4px 0; }
   a { color: var(--teal); }
-  a:hover { color: var(--accent); }
+  a:hover { color: #fff; }
   .contact {
     margin-top: 28px; padding: 14px 18px; border-radius: 14px;
     background: rgba(77, 208, 225, .08); border: 1px solid rgba(77, 208, 225, .25);
   }
   footer { margin-top: 32px; color: var(--dim); font-size: 14px; text-align: center; }
+  a.home {
+    display: inline-block; margin-top: 18px; color: var(--dim);
+    text-decoration: none; font-weight: 600; font-size: 15px;
+  }
+  a.home:hover, a.home:focus-visible { color: #fff; }
+  @media (max-width: 400px) {
+    header { gap: 12px; }
+    header svg { width: 44px; height: 44px; border-radius: 11px; }
+    .brand { font-size: 14px; }
+    .brand b { font-size: 17px; }
+  }
   @media (max-width: 520px) {
     body { font-size: 16px; }
     article { padding: 22px 18px 14px; border-radius: 16px; }
@@ -62,7 +91,7 @@
     body { background: #fff; color: #000; }
     article { border: none; background: none; padding: 0; }
     h1, h2, p, li, .date, .brand { color: #000 !important; }
-    nav.lang, header svg { display: none; }
+    .lang, header svg, a.home { display: none; }
   }
 </style>
 </head>
@@ -87,16 +116,15 @@
         <rect x="45.5" y="66.5" width="17" height="17" rx="4"/>
       </g>
     </svg>
-    <div class="brand"><b>Светлячки: головоломка</b>ElarionArts</div>
+    <div class="brand"><b><span class="ru">Светлячки: головоломка</span><span class="en">Fireflies: Logic Puzzle</span></b>ElarionArts</div>
+    <div class="lang" role="group" aria-label="Язык / Language">
+      <button type="button" data-lang="ru" aria-pressed="false">RU</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
   </header>
 
-  <nav class="lang" aria-label="Язык / Language">
-    <a href="#ru" hreflang="ru">Русский</a>
-    <a href="#en" hreflang="en">English</a>
-  </nav>
-
   <!-- ===================================================== RU -->
-  <article id="ru" lang="ru">
+  <article class="ru" lang="ru">
     <h1>Политика конфиденциальности игры «Светлячки: головоломка»</h1>
     <p class="date">Дата вступления в силу: 6 ноября 2026 года</p>
 
@@ -127,14 +155,15 @@
     <p>Мы можем обновлять эту политику. Новая версия публикуется по этому же адресу с указанием даты вступления в силу.</p>
 
     <p class="contact">Контакт для вопросов: <a href="mailto:elarionarts@gmail.com">elarionarts@gmail.com</a></p>
+    <a class="home" href="index.html?lang=ru">← На главную</a>
   </article>
 
   <!-- ===================================================== EN -->
-  <article id="en" lang="en">
-    <h1>Privacy Policy — “Fireflies: Light Puzzle”</h1>
+  <article class="en" lang="en">
+    <h1>Privacy Policy — “Fireflies: Logic Puzzle”</h1>
     <p class="date">Effective date: 6 November 2026</p>
 
-    <p>This policy explains what data is processed by the Android game “Fireflies: Light Puzzle” (the “Game”), developed by ElarionArts (the “Developer”).</p>
+    <p>This policy explains what data is processed by the Android game “Fireflies: Logic Puzzle” (the “Game”), developed by ElarionArts (the “Developer”).</p>
 
     <h2>1. Data stored by the Game</h2>
     <p>No account is required. The Game does not ask for your name, phone number, e-mail, contacts, photos, location or any other personal data.</p>
@@ -161,9 +190,30 @@
     <p>We may update this policy. The new version will be published at this address with a new effective date.</p>
 
     <p class="contact">Contact: <a href="mailto:elarionarts@gmail.com">elarionarts@gmail.com</a></p>
+    <a class="home" href="index.html?lang=en">← Back to home</a>
   </article>
 
   <footer>© 2026 ElarionArts</footer>
 </div>
+<script>
+  (function () {
+    var titles = { ru: 'Политика конфиденциальности — Светлячки: головоломка', en: 'Privacy Policy — Fireflies: Logic Puzzle' };
+    var buttons = document.querySelectorAll('.lang button');
+    function apply(l, remember) {
+      document.documentElement.setAttribute('data-lang', l);
+      document.documentElement.lang = l;
+      document.title = titles[l];
+      buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === l)); });
+      if (remember) {
+        try { localStorage.setItem('lang', l); } catch (e) {}
+        try { history.replaceState(null, '', location.pathname + '#' + l); } catch (e) {}
+      }
+    }
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.dataset.lang, true); });
+    });
+    apply(document.documentElement.getAttribute('data-lang') || 'ru', false);
+  })();
+</script>
 </body>
 </html>
