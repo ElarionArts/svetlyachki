@@ -1,0 +1,170 @@
+/* Светлячки: головоломка — стили главной страницы (общие — в base.css) */
+html { scroll-behavior: smooth; }
+body {
+  background: radial-gradient(1200px 600px at 70% -10%, #26306b 0%, transparent 60%),
+              linear-gradient(180deg, var(--night-top), var(--night) 520px) , var(--night);
+  background-color: var(--night);
+}
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+
+/* звёздочки-огоньки на фоне */
+.sky { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.sky i {
+  position: absolute; width: 3px; height: 3px; border-radius: 50%;
+  background: #ffe98a; opacity: .5; box-shadow: 0 0 6px 2px rgba(255, 213, 79, .35);
+  animation: blink 4s ease-in-out infinite;
+}
+@keyframes blink { 0%,100% { opacity: .15; } 50% { opacity: .8; } }
+@media (prefers-reduced-motion: reduce) { .sky i { animation: none; } html { scroll-behavior: auto; } }
+main, header, footer { position: relative; z-index: 1; }
+
+/* шапка */
+header .wrap { display: flex; align-items: center; justify-content: space-between; padding-top: 20px; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--dim); text-decoration: none; font-size: 15px; }
+.brand svg { width: 32px; height: 32px; border-radius: 8px; }
+.brand b { color: var(--text); font-weight: 600; }
+.brand a { color: inherit; text-decoration: none; }
+.brand-game { display: flex; align-items: center; gap: 10px; }
+.brand-game:hover b { color: #fff; }
+header nav a { color: var(--dim); text-decoration: none; font-size: 15px; margin-left: 18px; }
+header nav a:hover { color: #fff; }
+.right { display: flex; align-items: center; gap: 8px; }
+.lang { margin-left: 18px; }
+
+/* первый экран */
+.hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; padding: 56px 0 40px; }
+.hero-icon { width: 96px; height: 96px; border-radius: 22px; box-shadow: 0 10px 40px rgba(255, 213, 79, .18); }
+h1 { font-size: 52px; line-height: 1.05; margin: 22px 0 10px; color: var(--accent); letter-spacing: .5px; }
+.tagline { font-size: 22px; color: #fff; margin: 0 0 10px; }
+.lead { color: var(--dim); margin: 0 0 28px; max-width: 520px; }
+.buttons { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 22px; border-radius: 16px; text-decoration: none;
+  font-weight: 700; font-size: 17px; transition: transform .15s, box-shadow .15s;
+}
+.btn-main { background: var(--accent); color: #2b1d00; box-shadow: 0 6px 24px rgba(255, 213, 79, .25); }
+.btn-main:hover { color: #2b1d00; transform: translateY(-1px); box-shadow: 0 10px 30px rgba(255, 213, 79, .35); }
+.btn-ghost { border: 1px solid var(--line); color: var(--dim); font-weight: 600; cursor: default; }
+.btn svg { width: 20px; height: 20px; flex: none; }
+.meta { margin-top: 16px; color: var(--dim); font-size: 14px; }
+
+/* мини-игра */
+.demo {
+  background: var(--card); border: 1px solid var(--line); border-radius: 28px;
+  padding: 26px; text-align: center; max-width: 380px; justify-self: center; width: 100%;
+}
+.demo h2 { margin: 0 0 4px; font-size: 20px; color: #fff; }
+.demo p { margin: 0 0 18px; color: var(--dim); font-size: 15px; }
+.board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; aspect-ratio: 1; max-width: 270px; margin: 0 auto; }
+.board button {
+  border: 0; border-radius: 22%; background: var(--cell-off); cursor: pointer;
+  transition: background .25s, transform .2s, box-shadow .25s; transform: scale(.94);
+  -webkit-tap-highlight-color: transparent;
+}
+.board button.on {
+  background: radial-gradient(circle at 50% 50%, var(--glow) 0%, var(--cell-on) 70%);
+  transform: scale(1); box-shadow: 0 0 22px rgba(255, 213, 79, .45);
+}
+.board button:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; }
+.board button.flash { box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .85); }
+.status { min-height: 26px; margin-top: 16px; font-weight: 600; color: #fff; }
+.status.win { color: var(--accent); }
+.reset {
+  margin-top: 8px; background: none; border: 1px solid var(--line); color: var(--dim);
+  border-radius: 999px; padding: 6px 16px; font: inherit; font-size: 14px; cursor: pointer;
+}
+.reset:hover { color: #fff; border-color: #fff; }
+
+/* секции */
+section { padding: 44px 0; }
+h2.title { font-size: 32px; margin: 0 0 8px; color: #fff; }
+.sub { color: var(--dim); margin: 0 0 28px; }
+
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.feature { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px; }
+.feature .ic {
+  width: 44px; height: 44px; border-radius: 12px; background: var(--card-high);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
+}
+.feature .ic svg { width: 24px; height: 24px; }
+.feature h3 { margin: 0 0 6px; font-size: 18px; color: #fff; }
+.feature p { margin: 0; color: var(--dim); font-size: 15px; }
+
+/* скриншоты */
+/* Сетка: 3 в ряд на компьютере, 2 на планшете и телефоне, 1 на очень узких экранах */
+.shots {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 270px));
+  gap: 24px; justify-content: center;
+}
+.shots figure { margin: 0; }
+.shots figure[hidden] { display: none; }
+.shots button {
+  display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in;
+  border-radius: 22px; -webkit-tap-highlight-color: transparent;
+}
+.shots button:focus-visible { outline: 3px solid var(--teal); outline-offset: 4px; }
+.shots img {
+  display: block; width: 100%; height: auto; border-radius: 22px;
+  border: 5px solid #050814; box-shadow: 0 14px 40px rgba(0, 0, 0, .45); background: var(--card);
+  transition: transform .2s;
+}
+.shots button:hover img { transform: translateY(-3px); }
+
+/* Просмотр скриншота во весь экран */
+.viewer {
+  position: fixed; inset: 0; z-index: 10; background: rgba(5, 8, 20, .92);
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+}
+.viewer[hidden] { display: none; }
+.viewer img { max-width: 100%; max-height: 100%; border-radius: 18px; box-shadow: 0 20px 60px rgba(0, 0, 0, .6); }
+.viewer button {
+  position: absolute; width: 48px; height: 48px; border-radius: 50%; border: 0;
+  background: rgba(255, 255, 255, .12); color: #fff; font-size: 26px; cursor: pointer;
+}
+.viewer button:hover { background: rgba(255, 255, 255, .22); }
+.viewer .close { top: 16px; right: 16px; }
+.viewer .prev { left: 16px; top: 50%; transform: translateY(-50%); }
+.viewer .next { right: 16px; top: 50%; transform: translateY(-50%); }
+.shots-empty { color: var(--dim); font-size: 15px; }
+
+/* как играть */
+.rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; counter-reset: step; }
+.rule { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px; }
+.rule::before {
+  counter-increment: step; content: counter(step);
+  display: inline-flex; width: 32px; height: 32px; border-radius: 50%;
+  align-items: center; justify-content: center; font-weight: 700;
+  background: var(--accent); color: #2b1d00; margin-bottom: 12px;
+}
+.rule p { margin: 0; color: var(--text); font-size: 16px; }
+
+/* призыв */
+.cta {
+  text-align: center; background: var(--card); border: 1px solid var(--line);
+  border-radius: 28px; padding: 40px 24px;
+}
+.cta .buttons { justify-content: center; }
+
+footer { padding: 40px 0 48px; color: var(--dim); font-size: 14px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 24px; }
+footer a { color: var(--dim); }
+footer .foot-links { display: flex; flex-wrap: wrap; gap: 6px 24px; }
+footer .foot-links a { white-space: nowrap; }
+footer .copy a { text-decoration: none; }
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; gap: 36px; padding-top: 36px; text-align: center; }
+  .hero-icon { margin: 0 auto; }
+  .lead { margin-left: auto; margin-right: auto; }
+  .buttons { justify-content: center; }
+  .features, .rules { grid-template-columns: 1fr; }
+  h1 { font-size: 42px; }
+  header nav { display: none; }
+  .lang { margin-left: 0; }
+  .shots { grid-template-columns: repeat(2, minmax(0, 260px)); gap: 16px; }
+  footer .wrap { flex-direction: column; gap: 14px; }
+}
+@media (max-width: 340px) {
+  .shots { grid-template-columns: minmax(0, 280px); }
+}

@@ -48,4 +48,4 @@ This repository hosts the game's website on GitHub Pages: the landing page, scre
 
 В этом репозитории лежит сайт игры (GitHub Pages): главная страница, скриншоты, политика конфиденциальности и условия использования.
 
-© 2026 ElarionArts
+© 2026 ElarionArts. All rights reserved.
